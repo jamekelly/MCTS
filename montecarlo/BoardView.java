@@ -79,5 +79,13 @@ public class BoardView extends JComponent{
     public void setModel(int[][] model){
         this.model = model;
     }
+
+    public int getSquareSize() {
+        return size;
+    }
+    
+    
+    
+    
     
 }

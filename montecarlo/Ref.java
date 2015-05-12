@@ -15,8 +15,8 @@ import javax.swing.JFrame;
  */
 public class Ref {
     
-    private MonteCarlo mc;
-    private FullView fv;
+    private final MonteCarlo mc;
+    private final FullView fv;
     
     
         
@@ -35,7 +35,7 @@ public class Ref {
         this.fv = fv;
     }
     
-    public MonteNode startGUI(MonteNode root, MonteCarlo m1) throws Exception{
+    /*public MonteNode startGUI(MonteNode root, MonteCarlo m1) throws Exception{
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setBounds(30, 30, 850, 850);
@@ -44,7 +44,7 @@ public class Ref {
         
         window.setVisible(true);
         return this.playAgainstMCTS(root, board, m1);
-    }
+    }*/
 
     /*public MonteNode playAgainstMCTS(MonteNode root, BoardView comp, MonteCarlo m1, MonteCarlo m2) throws Exception, NoSuchMethodException {
         System.out.println("ROOT OF SEARCH --- " + root.getLastMoved() + " just moved");
@@ -62,7 +62,7 @@ public class Ref {
         return root;
     }*/
     
-    public MonteNode playAgainstMCTS(MonteNode root, BoardView comp, MonteCarlo m1) throws Exception, NoSuchMethodException {
+    /*public MonteNode playAgainstMCTS(MonteNode root, BoardView comp, MonteCarlo m1) throws Exception, NoSuchMethodException {
         
         System.out.println("ROOT OF SEARCH --- " + root.getLastMoved() + " just moved");
         comp.setModel(root.getState().getState());
@@ -73,17 +73,17 @@ public class Ref {
             root = m1.searchForOne(root);
             return this.playAgainstMCTS(root, comp, m1);
         } else if(root.getLastMoved() > 1){
-            /* -- When uncommented, user plays the AI -- */
+            /* -- When uncommented, user plays the AI -- 
             root = root.getState().userMove();
 
-            /* -- When 2 lines below are uncommented, 1's move is chosen randomly -- */
+            /* -- When 2 lines below are uncommented, 1's move is chosen randomly -- 
             //Checkers c = new Checkers(root.getState().makeGoodMove());
             //root = new MonteNode(c, 1);
 
             return this.playAgainstMCTS(root, comp, m1);
         }
         return root;
-    }
+    }*/
     
     public void playMCTS(final MonteNode root, MonteCarlo m1) throws Exception, NoSuchMethodException {
         
@@ -94,22 +94,24 @@ public class Ref {
             return;
         } else if(root.getLastMoved() <= 1){
             MonteNode roo = m1.searchForOne(root);
-            this.playMCTS(root, m1);
+            this.playMCTS(roo, m1);
         } else if(root.getLastMoved() > 1){
             /* -- When uncommented, user plays the AI -- */
+            if (this.fv.getComp().getMouseListeners().length > 0){
+                this.fv.getComp().removeMouseListener(this.fv.getComp().getMouseListeners()[0]);
+            }
             this.fv.getComp().addMouseListener(new MouseAdapter() {
                 
                 public void mouseClicked(MouseEvent e){
-            MonteNode roo = root.getState().userMove();
-
-            /* -- When 2 lines below are uncommented, 1's move is chosen randomly -- */
-            //Checkers c = new Checkers(root.getState().makeGoodMove());
-            //root = new MonteNode(c, 1);
-               try{
-            Ref.this.playMCTS(roo, m1);
-               }catch(Exception ex){
-                  
-               }
+                    int xpt = e.getX() / fv.getComp().getSquareSize();
+                    int ypt = e.getY() / fv.getComp().getSquareSize();
+                    System.out.println("X: " + xpt + " Y: " + ypt);
+                    MonteNode roo = root.getState().userMove(xpt, ypt);
+                    try {
+                        Ref.this.playMCTS(roo, m1);
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             });
         }

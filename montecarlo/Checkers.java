@@ -934,15 +934,15 @@ public class Checkers {
         return loc;
     }
     
-    public MonteNode userMove() {
+    public MonteNode userMove(int x, int y) {
         String action = "";
         ArrayList<int[][]> b = new ArrayList<>();
         MonteNode mn = null;
         Scanner scanner = new Scanner(System.in);
-        System.out.print("row : ");
+        /*System.out.print("row : ");
         int row = scanner.nextInt();
         System.out.print("column : ");
-        int col = scanner.nextInt();
+        int col = scanner.nextInt();*/
         System.out.print("move : ");
         String move = scanner.next();
         if(move.contains("k") && move.contains("r")){
@@ -960,14 +960,14 @@ public class Checkers {
         clargs[2] = ArrayList.class;
         try{
             Method m  = this.getClass().getDeclaredMethod(action, clargs);
-            int[][] newState = (int[][]) m.invoke(this, row, col, b);
+            int[][] newState = (int[][]) m.invoke(this, y, x, b);
             Checkers check = new Checkers(newState);
             check.king();
             mn = new MonteNode(check, 1);
         } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
             System.out.println("please try again");
             System.out.println(this);
-            return this.userMove();
+            return this.userMove(x, y);
          }
         return mn;
     }
