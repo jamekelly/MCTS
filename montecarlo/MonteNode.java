@@ -32,7 +32,7 @@ public class MonteNode {
     }
     
     public void addVisit() {
-        this.timesVisited += 1;
+        this.timesVisited++;
     }
     
     public void setParent(MonteNode parent) {

@@ -5,6 +5,8 @@
  */
 package montecarlo;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
@@ -99,20 +101,33 @@ public class Ref {
             /* -- When uncommented, user plays the AI -- */
             if (this.fv.getComp().getMouseListeners().length > 0){
                 this.fv.getComp().removeMouseListener(this.fv.getComp().getMouseListeners()[0]);
+                this.fv.getTextMove().removeActionListener(this.fv.getTextMove().getActionListeners()[0]);
             }
             this.fv.getComp().addMouseListener(new MouseAdapter() {
                 
                 public void mouseClicked(MouseEvent e){
                     int xpt = e.getX() / fv.getComp().getSquareSize();
                     int ypt = e.getY() / fv.getComp().getSquareSize();
-                    System.out.println("X: " + xpt + " Y: " + ypt);
-                    MonteNode roo = root.getState().userMove(xpt, ypt);
-                    try {
+                    Ref.this.fv.setXLabel(xpt);
+                    Ref.this.fv.setYLabel(ypt);
+                }
+            });
+            this.fv.getTextMove().addActionListener(new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent ae){
+                    int x = Ref.this.fv.getXLabel();
+                    int y = Ref.this.fv.getYLabel();
+                    String mv = Ref.this.fv.getMove();
+                    MonteNode roo = root.getState().userMove(x, y, mv);
+                    Ref.this.fv.getTextMove().setText("");
+                    try{
                         Ref.this.playMCTS(roo, m1);
-                    } catch(Exception ex) {
-                        ex.printStackTrace();
+                    } catch(Exception ex){
+                        
                     }
                 }
+                
             });
         }
         

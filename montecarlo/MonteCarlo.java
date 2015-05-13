@@ -7,8 +7,6 @@ package montecarlo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 /**
  * Class to perform MCTS on a game of checkers
@@ -114,7 +112,7 @@ public class MonteCarlo {
                 posBoards = par.getState().tryMoves(1, piece[0], piece[1]);
             }
             for (int[][] posBoard : posBoards) {
-                if (!par.isInChild(posBoard) && !Arrays.deepEquals(par.getState().getState(), posBoard)) {
+                if (!par.isInChild(posBoard) && posBoard != null)  {
                     check.setState(posBoard);
                     if(par.getLastMoved() <= 1){
                         newKid = new MonteNode(check, 2);}
@@ -165,34 +163,12 @@ public class MonteCarlo {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        // TODO code application logic here
-        int[][] startState = new int[][]
-        {
-            {1,0,1,0,1,0},
-            {0,1,0,1,0,1},
-            {0,0,0,0,0,0},
-            {0,0,0,0,0,0},
-            {2,0,2,0,2,0},
-            {0,2,0,2,0,2}
-        };
+        
         MonteCarlo monte1 = new MonteCarlo(100);
-        MonteCarlo monte2 = new MonteCarlo(20);
         Checkers c = new Checkers();
         MonteNode s = new MonteNode(c, 0);
-        JFrame f = new JFrame();
-        BoardView bv = new BoardView(c.getState(), 80);
         FullView fv = new FullView(c.getState());
         Ref ref = new Ref(monte1,fv);
-       /* JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setBounds(30, 30, 650, 650);
-        BoardView b = new BoardView(startState);
-        window.getContentPane().add(b);
-        window.setVisible(true);*/
-        //MonteNode best = 
         ref.playMCTS(s, monte1);
-        //System.out.println(best);
-        //monte.run(200);
-        
     }
 }

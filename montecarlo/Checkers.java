@@ -5,6 +5,7 @@
  */
 package montecarlo;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -708,6 +709,13 @@ public class Checkers {
         ArrayList<int[][]> moves = new ArrayList<>();
         int randPair = 0;
         Random r = new Random();
+        /*int[][] newState = new int[state.length][];
+        for(int l = 0;l<state.length;l++){
+            int[] row = state[l];
+            int len = row.length;
+            newState[l] = new int[len];
+            System.arraycopy(row, 0, newState[l], 0, len);
+        }*/
         if(men.size() > 0){
             randPair = r.nextInt(men.size());
         }
@@ -715,13 +723,7 @@ public class Checkers {
             System.out.println("THIS HAS NO MOVES");
             System.out.println(this);
         }
-        int[][] newState = new int[state.length][];
-        for(int l = 0;l<state.length;l++){
-            int[] row = state[l];
-            int len = row.length;
-            newState[l] = new int[len];
-            System.arraycopy(row, 0, newState[l], 0, len);
-        }
+        int[][] newState = null;
         if(player == 1){
             int[] pair = men.get(randPair);
             do {
@@ -742,7 +744,7 @@ public class Checkers {
                                 break;
                     }
                 } catch(Exception f) {}
-            } while(Arrays.deepEquals(newState, state));
+            } while(newState == null);
         }
         else {
             int[] pair = men.get(randPair);
@@ -764,7 +766,7 @@ public class Checkers {
                                 break;
                     }
                 } catch(Exception f) {}
-            } while(Arrays.deepEquals(newState, state));
+            } while(newState == null);
         }
         this.king(newState);
         return newState;
@@ -780,13 +782,6 @@ public class Checkers {
      */
     public ArrayList<int[][]> tryMoves(int player, int i, int j) {
         ArrayList<int[][]> moves = new ArrayList<>();
-        int[][] curState = new int[state.length][];
-        for(int l = 0;l<state.length;l++){
-            int[] row = state[l];
-            int len = row.length;
-            curState[l] = new int[len];
-            System.arraycopy(row, 0, curState[l], 0, len);
-        }
         if(player == 1){
             for (int p = 0; p < numPossibleMoves(1, i, j); p++) {
                 int[][] newState = null;
@@ -802,18 +797,18 @@ public class Checkers {
                             try {
                                 newState = this.oppMoveMyRight(i, j, moves);
                             } catch (Exception d) {
-                                    newState = new int[state.length][];
-                                    for (int z = 0; z < state.length; z++) {
-                                        int[] row = state[z];
-                                        int len = row.length;
-                                        newState[z] = new int[len];
-                                        System.arraycopy(row, 0, newState[i], 0, len);
-                                    }
+                                newState = new int[state.length][];
+                                for(int x = 0;x<state.length;x++){
+                                    int[] row = state[x];
+                                    int len = row.length;
+                                    newState[x] = new int[len];
+                                    System.arraycopy(row, 0, newState[x], 0, len);
                                 }
+                            }
                             }
                         }
                     }
-                moves.add(newState);
+                    moves.add(newState);
             }
         }
         else{
@@ -832,7 +827,7 @@ public class Checkers {
                                 newState = this.myKingMyRight(i, j, moves);
                             } catch (Exception g) {
                                 newState = new int[state.length][];
-                                for (int x = 0; x < state.length; x++) {
+                                for(int x = 0;x<state.length;x++){
                                     int[] row = state[x];
                                     int len = row.length;
                                     newState[x] = new int[len];
@@ -855,7 +850,7 @@ public class Checkers {
         this.state = state;
     }
     
-    public int[][] makeGoodMove() throws Exception{
+    /*public int[][] makeGoodMove() throws Exception{
         ArrayList<int[]> men = this.whoCanMove(1);
         ArrayList<int[][]> moves = new ArrayList<>();
         int randPair = 0;
@@ -873,7 +868,7 @@ public class Checkers {
             int len = row.length;
             newState[l] = new int[len];
             System.arraycopy(row, 0, newState[l], 0, len);
-        }*/
+        }
         int[] pair = men.get(randPair);
         if(this.canOppKingScore("left", pair[0], pair[1])){
             newState = this.oppKingMyLeft(pair[0], pair[1], moves);
@@ -882,7 +877,7 @@ public class Checkers {
         } else if(this.canOpponentScore("left", pair[0], pair[1])){
             newState = this.oppMoveMyLeft(pair[0], pair[1], moves);
         } else if(this.canOpponentScore("right", pair[0], pair[1])){
-            newState = this.oppMoveMyRight(pair[0], pair[1], moves);
+            newState = this.oppMoveMyRight(pair[0], pair[1], moves, );
         } else if(this.canOppKingMove("left", pair[0], pair[1])){
             newState = this.oppKingMyLeft(pair[0], pair[1], moves);
         } else if(this.canOppKingMove("right", pair[0], pair[1])){
@@ -893,7 +888,7 @@ public class Checkers {
             newState = this.oppMoveMyRight(pair[0], pair[1], moves);
         } 
         return newState;
-    }
+    }*/
     
     /**
      * Method that simulates a random game
@@ -934,40 +929,38 @@ public class Checkers {
         return loc;
     }
     
-    public MonteNode userMove(int x, int y) {
-        String action = "";
+    public MonteNode userMove(int x, int y, String move) {
+        int[][] nState = new int[state.length][];
+        for(int l = 0;l<state.length;l++){
+            int[] row = state[l];
+            int len = row.length;
+            nState[l] = new int[len];
+            System.arraycopy(row, 0, nState[l], 0, len);
+        }
+        int[][] newState = null;
         ArrayList<int[][]> b = new ArrayList<>();
         MonteNode mn = null;
-        Scanner scanner = new Scanner(System.in);
-        /*System.out.print("row : ");
-        int row = scanner.nextInt();
-        System.out.print("column : ");
-        int col = scanner.nextInt();*/
-        System.out.print("move : ");
-        String move = scanner.next();
-        if(move.contains("k") && move.contains("r")){
-            action = "oppKingMyRight";
-        } else if(move.contains("k") && move.contains("l")){
-            action = "oppKingMyLeft";
-        } else if(move.contains("l")){
-            action = "oppMoveMyLeft";
-        } else if(move.contains("r")){
-            action = "oppMoveMyRight";
-        } 
-        Class[] clargs = new Class[3];
-        clargs[0] = Integer.TYPE;
-        clargs[1] = Integer.TYPE;
-        clargs[2] = ArrayList.class;
         try{
-            Method m  = this.getClass().getDeclaredMethod(action, clargs);
-            int[][] newState = (int[][]) m.invoke(this, y, x, b);
+        if(move.contains("k") && move.contains("r")){
+            newState = this.oppKingMyRight(y,x,b);
+        } else if(move.contains("k") && move.contains("l")){
+            newState = this.oppKingMyLeft(y,x,b);
+        } else if(move.contains("l")){
+            newState = this.oppMoveMyLeft(y,x,b);
+        } else if(move.contains("r")){
+            newState = this.oppMoveMyRight(y,x,b);
+        } 
+        
+        
+            //Method m  = this.getClass().getDeclaredMethod(action, clargs);
+            //int[][] newState = (int[][]) m.invoke(this, y, x, b, nState);
             Checkers check = new Checkers(newState);
             check.king();
             mn = new MonteNode(check, 1);
-        } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
+        } catch(Exception e){
             System.out.println("please try again");
             System.out.println(this);
-            return this.userMove(x, y);
+            //return this.userMove(x, y,);
          }
         return mn;
     }

@@ -65,12 +65,12 @@ public class BoardView extends JComponent{
                     g.setColor(Color.BLACK);
                     g.fillOval(i * this.size + this.size / 10, j * this.size + this.size / 10, this.size - 20, this.size - 20);
                     g.setColor(Color.WHITE);
-                    g.drawOval(i * this.size + 20, j * this.size + 20, this.size - 40, this.size - 40);
+                    g.drawOval(i * this.size + 15, j * this.size + 20, this.size - 40, this.size - 40);
                 } else if(model[j][i] == 4){
                     g.setColor(Color.RED);
                     g.fillOval(i * this.size + this.size / 10, j * this.size + this.size / 10, this.size - 20, this.size - 20);
                     g.setColor(Color.BLACK);
-                    g.drawOval(i * this.size + 20, j * this.size + 20, this.size - 40, this.size - 40);
+                    g.drawOval(i * this.size + 15, j * this.size + 20, this.size - 40, this.size - 40);
                 }
             }
         }
