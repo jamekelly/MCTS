@@ -167,6 +167,28 @@ public class Checkers {
         return false;
     }
     
+    public boolean canOpponentScore(int[][] nState, String dir, int i, int j) {
+        if(nState[i][j] == 1 || nState[i][j] == 3){
+            if(i<nState.length - 2){
+                if(dir.equalsIgnoreCase("left")){
+                    if(j > 1){
+                        if((nState[i+1][j-1] == 2 || nState[i+1][j-1] == 4) && nState[i+2][j-2] == 0){
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    if(j < nState.length - 2){
+                        if((nState[i+1][j+1] == 2 || nState[i+1][j+1] == 4) && nState[i+2][j+2] == 0){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     public boolean canMyKingScore() {
         for(int i = 0;i<state.length - 2;i++){
             for(int j = 0;j<state[i].length;j++){
@@ -190,6 +212,28 @@ public class Checkers {
                 else {
                     if(j < state.length - 2){
                         if((state[i+1][j+1] == 1 || state[i+1][j+1] == 3) && state[i+2][j+2] == 0){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean canMyKingScore(int[][] nState, String dir, int i, int j){
+        if(nState[i][j] == 4){
+            if(i<nState.length - 2){
+                if(dir.equalsIgnoreCase("left")){
+                    if(j > 1){
+                        if((nState[i+1][j-1] == 1 || nState[i+1][j-1] == 3) && nState[i+2][j-2] == 0){
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    if(j < nState.length - 2){
+                        if((nState[i+1][j+1] == 1 || nState[i+1][j+1] == 3) && nState[i+2][j+2] == 0){
                             return true;
                         }
                     }
@@ -311,6 +355,28 @@ public class Checkers {
         return false;
     }
     
+    public boolean canIScore(int[][] nState, String dir, int i, int j) {
+        if(nState[i][j] == 2 || nState[i][j] == 4){
+            if(i>1){
+                if(dir.equalsIgnoreCase("left")){
+                    if(j > 1){
+                        if((nState[i-1][j-1] == 1 || nState[i-1][j-1] == 3) && nState[i-2][j-2] == 0){
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    if(j < nState.length - 2){
+                        if((nState[i-1][j+1] == 1 || nState[i-1][j+1] == 3) && nState[i-2][j+2] == 0){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     public boolean canOppKingScore(){
         for(int i = 2;i<state.length;i++){
             for(int j = 0;j<state[i].length;j++) {
@@ -334,6 +400,28 @@ public class Checkers {
                 else {
                     if(j < state.length - 2){
                         if((state[i-1][j+1] == 2 || state[i-1][j+1] == 4) && state[i-2][j+2] == 0){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean canOppKingScore(int[][] nState, String dir, int i, int j){
+        if(nState[i][j] == 3){
+            if(i>1){
+                if(dir.equalsIgnoreCase("left")){
+                    if(j > 1){
+                        if((nState[i-1][j-1] == 2 || nState[i-1][j-1] == 4) && nState[i-2][j-2] == 0){
+                            return true;
+                        }
+                    }
+                }
+                else {
+                    if(j < nState.length - 2){
+                        if((nState[i-1][j+1] == 2 || nState[i-1][j+1] == 4) && nState[i-2][j+2] == 0){
                             return true;
                         }
                     }
@@ -404,7 +492,7 @@ public class Checkers {
         }else if(i == state.length - 1){
             if(state[i][j] == 3){
                 nState = null;
-                nState = this.oppKingMyRight(i, j, moves);
+                nState = this.oppKingMyRight(i, j, moves);//, nState);
             }
             else {throw new Exception();}
         }
@@ -414,13 +502,20 @@ public class Checkers {
                 nState[i+2][j+2] = state[i][j];
                 nState[i+1][j+1] = 0;
                 nState[i][j] = 0;
+                if(this.canOpponentScore(nState, "left", i+2, j+2)){
+                    Checkers t = new Checkers(nState);
+                    return t.oppMoveMyLeft(i+2, j+2, moves);
+                } else if(this.canOpponentScore(nState, "right", i+2, j+2)){
+                    Checkers t = new Checkers(nState);
+                    return t.oppMoveMyRight(i+2, j+2, moves);
+                }
             } else if((state[i][j] == 1 || state[i][j] == 3) && state[i+1][j+1] == 0){
                 nState[i+1][j+1] = state[i][j];
                 nState[i][j] = 0;
             }
             else if(state[i][j] == 3){
                 nState = null;
-                nState = this.oppKingMyRight(i, j, moves);
+                nState = this.oppKingMyRight(i, j, moves);//, nState);
             }
             else {throw new Exception();}
         }
@@ -451,7 +546,7 @@ public class Checkers {
         }else if(i == state.length - 1){
             if(state[i][j] == 3){
                 nState = null;
-                nState = this.oppKingMyLeft(i, j, moves);
+                nState = this.oppKingMyLeft(i, j, moves);//, nState);
             }
             else {throw new Exception();}
         }
@@ -461,6 +556,13 @@ public class Checkers {
                 nState[i][j] = 0;
                 nState[i+1][j-1] = 0;
                 nState[i+2][j-2] = state[i][j];
+                if(this.canOpponentScore(nState, "left", i+2, j-2)){
+                    Checkers t = new Checkers(nState);
+                    return t.oppMoveMyLeft(i+2, j-2, moves);
+                } else if(this.canOpponentScore(nState, "right", i+2, j-2)){
+                    Checkers t = new Checkers(nState);
+                    return t.oppMoveMyRight(i+2, j-2, moves);
+                }
             }
             else if((state[i][j] == 1 || state[i][j] == 3) && state[i+1][j-1] == 0){
                 nState[i+1][j-1] = state[i][j];
@@ -468,7 +570,7 @@ public class Checkers {
             }
             else if(state[i][j] == 3){
                 nState = null;
-                nState = this.oppKingMyLeft(i, j, moves);
+                nState = this.oppKingMyLeft(i, j, moves);//, nState);
             }
             else {throw new Exception();}
         }
@@ -480,7 +582,7 @@ public class Checkers {
         return nState;
     }
     
-    public int[][] oppKingMyRight(int i, int j, ArrayList<int[][]> moves) throws Exception {
+    public int[][] oppKingMyRight(int i, int j, ArrayList<int[][]> moves)/*, int[][] nState)*/ throws Exception {
         if(moves == null)
             moves = new ArrayList<>();
         int[][] nState = new int[state.length][];
@@ -494,6 +596,13 @@ public class Checkers {
             nState[i][j] = 0;
             nState[i-1][j+1] = 0;
             nState[i-2][j+2] = state[i][j];
+            if(this.canOppKingScore(nState, "left", i-2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.oppKingMyLeft(i-2, j+2, moves);
+            } else if(this.canOppKingScore(nState, "right", i-2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.oppKingMyRight(i-2, j+2, moves);
+            }
         }
         else if(state[i][j] == 3 && state[i-1][j+1] == 0){
             nState[i][j] = 0;
@@ -508,7 +617,7 @@ public class Checkers {
         return nState;
     }
     
-    public int[][] oppKingMyLeft(int i, int j, ArrayList<int[][]> moves) throws Exception {
+    public int[][] oppKingMyLeft(int i, int j, ArrayList<int[][]> moves)/*, int[][] nState)*/ throws Exception {
         if(moves == null)
             moves = new ArrayList<>();
         int[][] nState = new int[state.length][];
@@ -522,6 +631,13 @@ public class Checkers {
             nState[i][j] = 0;
             nState[i-1][j-1] = 0;
             nState[i-2][j-2] = 3;
+            if(this.canOppKingScore(nState, "left", i-2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.oppKingMyLeft(i-2, j-2, moves);
+            } else if(this.canOppKingScore(nState, "right", i-2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.oppKingMyRight(i-2, j-2, moves);
+            }
         }
         else if(state[i][j] == 3 && state[i-1][j-1] == 0){
             nState[i][j] = 0;
@@ -550,6 +666,13 @@ public class Checkers {
             nState[i][j] = 0;
             nState[i-1][j+1] = 0;
             nState[i-2][j+2] = state[i][j];
+            if(this.canIScore(nState, "left", i-2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.myMoveMyLeft(i-2, j+2, moves);
+            } else if(this.canIScore(nState, "right", i-2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.myMoveMyRight(i-2, j+2, moves);
+            }
         } else if((state[i][j] == 2 || state[i][j] == 4) && state[i-1][j+1] == 0){
             nState[i][j] = 0;
             nState[i-1][j+1] = state[i][j];
@@ -577,6 +700,13 @@ public class Checkers {
             nState[i][j] = 0;
             nState[i-1][j-1] = 0;
             nState[i-2][j-2] = state[i][j];
+            if(this.canIScore(nState, "left", i-2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.myMoveMyLeft(i-2, j-2, moves);
+            } else if(this.canIScore(nState, "right", i-2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.myMoveMyRight(i-2, j-2, moves);
+            }
         } else if((state[i][j] == 2 || state[i][j] == 4) && state[i-1][j-1] == 0){
             nState[i][j] = 0;
             nState[i-1][j-1] = state[i][j];
@@ -605,6 +735,13 @@ public class Checkers {
             nState[i+2][j+2] = state[i][j];
             nState[i+1][j+1] = 0;
             nState[i][j] = 0;
+            if(this.canMyKingScore(nState, "left", i+2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.myKingMyLeft(i+2, j+2, moves);
+            } else if(this.canMyKingScore(nState, "right", i+2, j+2)){
+                Checkers t = new Checkers(nState);
+                return t.myKingMyRight(i+2, j+2, moves);
+            }
         } else if(state[i][j] == 4 && state[i+1][j+1] == 0){
             nState[i+1][j+1] = 4;
             nState[i][j] = 0;
@@ -633,6 +770,13 @@ public class Checkers {
             nState[i][j] = 0;
             nState[i+1][j-1] = 0;
             nState[i+2][j-2] = state[i][j];
+            if(this.canMyKingScore(nState, "left", i+2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.myKingMyLeft(i+2, j-2, moves);
+            } else if(this.canMyKingScore(nState, "right", i+2, j-2)){
+                Checkers t = new Checkers(nState);
+                return t.myKingMyRight(i+2, j-2, moves);
+            }
         } else if(state[i][j] == 4 && state[i+1][j-1] == 0){
             nState[i+1][j-1] = 4;
             nState[i][j] = 0;
@@ -709,13 +853,13 @@ public class Checkers {
         ArrayList<int[][]> moves = new ArrayList<>();
         int randPair = 0;
         Random r = new Random();
-        /*int[][] newState = new int[state.length][];
+        int[][] copy = new int[state.length][];
         for(int l = 0;l<state.length;l++){
             int[] row = state[l];
             int len = row.length;
-            newState[l] = new int[len];
-            System.arraycopy(row, 0, newState[l], 0, len);
-        }*/
+            copy[l] = new int[len];
+            System.arraycopy(row, 0, copy[l], 0, len);
+        }
         if(men.size() > 0){
             randPair = r.nextInt(men.size());
         }
@@ -734,13 +878,13 @@ public class Checkers {
                                 newState = this.oppMoveMyLeft(pair[0], pair[1], moves);
                                 break;
                         case 1: 
-                                newState = this.oppMoveMyRight(pair[0], pair[1], moves);
+                                newState = this.oppMoveMyRight(pair[0], pair[1], moves);//, copy);
                                 break;
                         case 2: 
-                                newState = this.oppKingMyLeft(pair[0], pair[1], moves);
+                                newState = this.oppKingMyLeft(pair[0], pair[1], moves);//, copy);
                                 break;
                         case 3: 
-                                newState = this.oppKingMyRight(pair[0], pair[1], moves);
+                                newState = this.oppKingMyRight(pair[0], pair[1], moves);//, copy);
                                 break;
                     }
                 } catch(Exception f) {}
@@ -782,20 +926,27 @@ public class Checkers {
      */
     public ArrayList<int[][]> tryMoves(int player, int i, int j) {
         ArrayList<int[][]> moves = new ArrayList<>();
+        int[][] copy = new int[state.length][];
+        for(int l = 0;l<state.length;l++){
+            int[] row = state[l];
+            int len = row.length;
+            copy[l] = new int[len];
+            System.arraycopy(row, 0, copy[l], 0, len);
+        }
         if(player == 1){
             for (int p = 0; p < numPossibleMoves(1, i, j); p++) {
                 int[][] newState = null;
                 try {
-                    newState = this.oppKingMyLeft(i, j, moves);
+                    newState = this.oppKingMyLeft(i, j, moves);//, copy);
                 } catch (Exception l) {
                     try {
-                        newState = this.oppKingMyRight(i, j, moves);
+                        newState = this.oppKingMyRight(i, j, moves);//,copy);
                     } catch (Exception m) {
                         try {
                             newState = this.oppMoveMyLeft(i, j, moves);
                         } catch (Exception e) {
                             try {
-                                newState = this.oppMoveMyRight(i, j, moves);
+                                newState = this.oppMoveMyRight(i, j, moves);//,copy);
                             } catch (Exception d) {
                                 newState = new int[state.length][];
                                 for(int x = 0;x<state.length;x++){
@@ -942,13 +1093,13 @@ public class Checkers {
         MonteNode mn = null;
         try{
         if(move.contains("k") && move.contains("r")){
-            newState = this.oppKingMyRight(y,x,b);
+            newState = this.oppKingMyRight(y,x,b);//,nState);
         } else if(move.contains("k") && move.contains("l")){
-            newState = this.oppKingMyLeft(y,x,b);
+            newState = this.oppKingMyLeft(y,x,b);//,nState);
         } else if(move.contains("l")){
             newState = this.oppMoveMyLeft(y,x,b);
         } else if(move.contains("r")){
-            newState = this.oppMoveMyRight(y,x,b);
+            newState = this.oppMoveMyRight(y,x,b);//, nState);
         } 
         
         

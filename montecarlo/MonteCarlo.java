@@ -69,7 +69,8 @@ public class MonteCarlo {
     public MonteNode explore(MonteNode par) {
         while(!par.isTerminal()) {
             if(!par.isExpanded(par.getLastMoved())) {
-                return this.expand(par);
+                MonteNode p = this.expand(par);
+                return p;//this.expand(par);
             }
             else {
                 par = this.chooseBestNode(par, constant);
@@ -112,7 +113,7 @@ public class MonteCarlo {
                 posBoards = par.getState().tryMoves(1, piece[0], piece[1]);
             }
             for (int[][] posBoard : posBoards) {
-                if (!par.isInChild(posBoard) && posBoard != null)  {
+                if (!par.isInChild(posBoard) && !Arrays.deepEquals(par.getState().getState(), posBoard))  {
                     check.setState(posBoard);
                     if(par.getLastMoved() <= 1){
                         newKid = new MonteNode(check, 2);}
@@ -164,7 +165,7 @@ public class MonteCarlo {
      */
     public static void main(String[] args) throws Exception {
         
-        MonteCarlo monte1 = new MonteCarlo(100);
+        MonteCarlo monte1 = new MonteCarlo(1000);
         Checkers c = new Checkers();
         MonteNode s = new MonteNode(c, 0);
         FullView fv = new FullView(c.getState());

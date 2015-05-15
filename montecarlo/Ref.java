@@ -21,84 +21,32 @@ public class Ref {
     private final FullView fv;
     
     
-        
-    /*public MonteNode startGUI(MonteNode root, MonteCarlo m1, MonteCarlo m2) throws Exception{
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setBounds(30, 30, 850, 850);
-        BoardView board = new BoardView(root.getState().getState(), 80);
-        window.getContentPane().add(board);
-        window.setVisible(true);
-        return this.playAgainstMCTS(root, board, m1, m2);
-    }*/
-    
     public Ref(MonteCarlo mc, FullView fv){
         this.mc = mc;
         this.fv = fv;
     }
     
-    /*public MonteNode startGUI(MonteNode root, MonteCarlo m1) throws Exception{
-        JFrame window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setBounds(30, 30, 850, 850);
-        BoardView board = new BoardView(root.getState().getState(), 80);
-        window.getContentPane().add(board);
-        
-        window.setVisible(true);
-        return this.playAgainstMCTS(root, board, m1);
-    }*/
-
-    /*public MonteNode playAgainstMCTS(MonteNode root, BoardView comp, MonteCarlo m1, MonteCarlo m2) throws Exception, NoSuchMethodException {
-        System.out.println("ROOT OF SEARCH --- " + root.getLastMoved() + " just moved");
-        comp.setModel(root.getState().getState());
-        comp.repaint();
-        if(root.isTerminal()){
-            return root;
-        } else if(root.getLastMoved() <= 1){
-            root = m1.searchForOne(root);
-            return this.playAgainstMCTS(root, comp, m1, m2);
-        } else if(root.getLastMoved() > 1){
-            root = m2.searchForOne(root);
-            return this.playAgainstMCTS(root, comp, m1, m2);
-        }
-        return root;
-    }*/
     
-    /*public MonteNode playAgainstMCTS(MonteNode root, BoardView comp, MonteCarlo m1) throws Exception, NoSuchMethodException {
-        
-        System.out.println("ROOT OF SEARCH --- " + root.getLastMoved() + " just moved");
-        comp.setModel(root.getState().getState());
-        comp.repaint();
-        if(root.isTerminal()){
-            return root;
-        } else if(root.getLastMoved() <= 1){
-            root = m1.searchForOne(root);
-            return this.playAgainstMCTS(root, comp, m1);
+
+    public void playAgainstMCTS(MonteNode root, MonteCarlo m1, MonteCarlo m2) throws Exception, NoSuchMethodException {
+        fv.setState(root.getState().getState());
+        if(root.getLastMoved() <= 1){
+            MonteNode roo = m1.searchForOne(root);
+            this.playAgainstMCTS(roo, m1, m2);
         } else if(root.getLastMoved() > 1){
-            /* -- When uncommented, user plays the AI -- 
-            root = root.getState().userMove();
-
-            /* -- When 2 lines below are uncommented, 1's move is chosen randomly -- 
-            //Checkers c = new Checkers(root.getState().makeGoodMove());
-            //root = new MonteNode(c, 1);
-
-            return this.playAgainstMCTS(root, comp, m1);
+            MonteNode roo = m2.searchForOne(root);
+            this.playAgainstMCTS(root, m1, m2);
         }
-        return root;
-    }*/
+    }
+    
     
     public void playMCTS(final MonteNode root, MonteCarlo m1) throws Exception, NoSuchMethodException {
         
-        //System.out.println("ROOT OF SEARCH --- " + root.getLastMoved() + " just moved");
-        fv.setState(root.getState().getState());
-        //comp.repaint();
-        if(root.isTerminal()){
-            return;
-        } else if(root.getLastMoved() <= 1){
+        if(root.getLastMoved() <= 1){
             MonteNode roo = m1.searchForOne(root);
+            fv.setState(roo.getState().getState());
             this.playMCTS(roo, m1);
         } else if(root.getLastMoved() > 1){
-            /* -- When uncommented, user plays the AI -- */
             if (this.fv.getComp().getMouseListeners().length > 0){
                 this.fv.getComp().removeMouseListener(this.fv.getComp().getMouseListeners()[0]);
                 this.fv.getTextMove().removeActionListener(this.fv.getTextMove().getActionListeners()[0]);
@@ -120,17 +68,14 @@ public class Ref {
                     int y = Ref.this.fv.getYLabel();
                     String mv = Ref.this.fv.getMove();
                     MonteNode roo = root.getState().userMove(x, y, mv);
+                    fv.setState(roo.getState().getState());
                     Ref.this.fv.getTextMove().setText("");
                     try{
                         Ref.this.playMCTS(roo, m1);
-                    } catch(Exception ex){
-                        
-                    }
+                    }  catch(Exception ex){}
                 }
-                
             });
         }
-        
     }
     
     /*public void run(int numberOfRuns, BoardView comp, MonteCarlo m1, MonteCarlo m2) throws Exception{
