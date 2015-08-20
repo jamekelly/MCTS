@@ -862,6 +862,7 @@ public class Checkers {
         }
         if(men.size() > 0){
             randPair = r.nextInt(men.size());
+            //System.out.println(randPair);
         }
         else {
             System.out.println("THIS HAS NO MOVES");
@@ -912,6 +913,7 @@ public class Checkers {
                 } catch(Exception f) {}
             } while(newState == null);
         }
+        //System.out.println("SUCCESS");
         this.king(newState);
         return newState;
     }
@@ -1080,7 +1082,7 @@ public class Checkers {
         return loc;
     }
     
-    public MonteNode userMove(int x, int y, String move) {
+    public MonteNode userMove(int x, int y, String move) throws Exception {
         int[][] nState = new int[state.length][];
         for(int l = 0;l<state.length;l++){
             int[] row = state[l];
@@ -1091,15 +1093,15 @@ public class Checkers {
         int[][] newState = null;
         ArrayList<int[][]> b = new ArrayList<>();
         MonteNode mn = null;
-        try{
+        //try{
         if(move.contains("k") && move.contains("r")){
             newState = this.oppKingMyRight(y,x,b);//,nState);
         } else if(move.contains("k") && move.contains("l")){
             newState = this.oppKingMyLeft(y,x,b);//,nState);
         } else if(move.contains("l")){
-            newState = this.oppMoveMyLeft(y,x,b);
+            newState = this.oppMoveMyLeft(y,x,b);//,nState);
         } else if(move.contains("r")){
-            newState = this.oppMoveMyRight(y,x,b);//, nState);
+            newState = this.oppMoveMyRight(y,x,b);//,nState);
         } 
         
         
@@ -1108,11 +1110,11 @@ public class Checkers {
             Checkers check = new Checkers(newState);
             check.king();
             mn = new MonteNode(check, 1);
-        } catch(Exception e){
+        /*} catch(Exception e){
             System.out.println("please try again");
             System.out.println(this);
-            //return this.userMove(x, y,);
-         }
+            //this.userMove(x, y,);
+         }*/
         return mn;
     }
     

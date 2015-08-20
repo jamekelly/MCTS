@@ -165,7 +165,7 @@ public class MonteCarlo {
      */
     public static void main(String[] args) throws Exception {
         
-        MonteCarlo monte1 = new MonteCarlo(1000);
+        MonteCarlo monte1 = new MonteCarlo(2000);
         Checkers c = new Checkers();
         MonteNode s = new MonteNode(c, 0);
         FullView fv = new FullView(c.getState());

@@ -67,12 +67,19 @@ public class Ref {
                     int x = Ref.this.fv.getXLabel();
                     int y = Ref.this.fv.getYLabel();
                     String mv = Ref.this.fv.getMove();
+                    try{
                     MonteNode roo = root.getState().userMove(x, y, mv);
+                    
                     fv.setState(roo.getState().getState());
                     Ref.this.fv.getTextMove().setText("");
                     try{
                         Ref.this.playMCTS(roo, m1);
                     }  catch(Exception ex){}
+                } catch (Exception e){
+                        try{
+                        Ref.this.playMCTS(root, m1);
+                    }  catch(Exception ex){}
+                    }
                 }
             });
         }
